@@ -5,6 +5,7 @@ import Registrasi from '../views/RegistrasiVue.vue';
 import Chat from './../components/ChatVue.vue';
 
 import Pesan from '../views/PesanVue.vue';
+import Profil from '../views/ProfilVuel.vue';
 
 Vue.use(VueRouter);
 
@@ -20,6 +21,11 @@ const router = new VueRouter({
                     path: '/chat/:idChat',
                     name: 'pesan',
                     component: Pesan,
+                },
+                {
+                    path: '/profile',
+                    name: 'profil',
+                    component: Profil,
                 },
             ],
         },

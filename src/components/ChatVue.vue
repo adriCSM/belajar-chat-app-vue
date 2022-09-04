@@ -1,6 +1,12 @@
 <template>
     <v-app id="inspire">
-        <v-app-bar app clipped-right flat height="72" color="blue darken-4">
+        <v-app-bar
+            app
+            clipped-right
+            flat
+            height="72"
+            color="blue-grey darken-4"
+        >
             <v-app-bar-nav-icon
                 @click="drawer = !drawer"
                 color="white"
@@ -16,7 +22,7 @@
                     class="bg-white"
                 ></v-text-field>
             </v-responsive>
-            <div class="my-2 mx-5 pe-5">
+            <div class="me-5">
                 <v-btn color="error" dark small @click="logout">
                     Log Out
                 </v-btn>
@@ -28,17 +34,25 @@
                 color="grey lighten-5"
                 height="128"
                 width="100%"
-                class="mb-6"
+                class="mb-10"
             >
-                <v-list>
-                    <v-list-item>
-                        <v-list-item-avatar>
-                            <v-img src="../../public/109715820.jpg"></v-img>
+                <v-list color="grey">
+                    <router-link to="/profile">
+                        <v-list-item-avatar
+                            width="70px"
+                            height="70px"
+                            style="
+                                display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                            "
+                        >
+                            <v-img :src="user.pic" link width="500px"></v-img>
                         </v-list-item-avatar>
-                    </v-list-item>
+                    </router-link>
 
-                    <v-list-item link>
-                        <v-list-item-content>
+                    <v-list-item>
+                        <v-list-item-content class="text-center">
                             <v-list-item-title class="text-h6">
                                 {{ user.name }}
                             </v-list-item-title>
@@ -46,51 +60,65 @@
                                 user.email
                             }}</v-list-item-subtitle>
                         </v-list-item-content>
-
-                        <v-list-item-action>
-                            <!--  -->
-                        </v-list-item-action>
                     </v-list-item>
                 </v-list>
             </v-sheet>
 
-            <v-list
-                class="pl-0 pt-0"
-                v-for="(item, i) in allUser"
-                :key="i"
-                @click="klik(item._id)"
-            >
-                <router-link
-                    :to="{ name: 'chat' }"
-                    style="text-decoration: none"
+            <v-list v-for="(item, i) in allUser" :key="i" class="pa-0">
+                <v-list-item
+                    color="white"
+                    v-if="item.email !== user.email"
+                    @click="klik(item._id)"
+                    to="/chat"
+                    link
                 >
-                    <v-list-item
-                        link
-                        v-if="item.email !== user.email"
-                        @click="klik(item._id)"
+                    <v-badge
+                        bordered
+                        bottom
+                        color="green"
+                        dot
+                        offset-x="25"
+                        offset-y="48"
+                        v-if="item.status == true"
                     >
                         <v-list-item-avatar>
-                            <v-img src="../../public/109715820.jpg"></v-img>
+                            <v-img :src="item.pic"> </v-img>
                         </v-list-item-avatar>
+                    </v-badge>
+                    <v-badge
+                        bordered
+                        bottom
+                        color="red"
+                        dot
+                        offset-x="25"
+                        offset-y="48"
+                        v-if="item.status == false"
+                    >
+                        <v-list-item-avatar v-if="item.status == false">
+                            <v-img :src="item.pic"> </v-img>
+                        </v-list-item-avatar>
+                    </v-badge>
 
-                        <v-list-item-content>
-                            <v-list-item-title color="white">
-                                {{ item.name }}
-                            </v-list-item-title>
-                            <v-list-item-subtitle>
+                    <v-list-item-content>
+                        <v-list-item-title color="white">
+                            {{ item.name }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                            <h5 style="color: lightblue">
                                 {{ item.email }}
-                            </v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-                </router-link>
+                            </h5>
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-divider></v-divider>
             </v-list>
         </v-navigation-drawer>
 
-        <v-navigation-drawer class="a" app clipped right color="white">
+        <v-navigation-drawer app clipped right color="white">
             <v-list color="traansparant">
-                <v-list-item v-for="n in 5" :key="n" link>
+                <v-list-item link>
                     <v-list-item-content>
-                        <v-list-item-title>Item {{ n }} </v-list-item-title>
+                        <v-list-item-title>Item </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -107,6 +135,7 @@ import Pesan from '@/views/PesanVue.vue';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import router from '@/router';
+import { io } from 'socket.io-client';
 
 export default {
     component: Pesan,
@@ -114,13 +143,20 @@ export default {
         const drawer = ref(null);
         const token = localStorage.getItem('token');
         const user = ref('');
-        const allUser = ref('');
+        const allUser = ref([]);
+        const socket = io('/');
 
         if (token == null) {
             router.push({
                 name: 'login',
             });
+            socket.emit('disconnect');
+            axios.patch(`/api/logout/?id=${user.value._id}`);
         }
+
+        socket.on('datas', (e) => {
+            allUser.value = e;
+        });
 
         onMounted(async () => {
             await axios
@@ -129,9 +165,10 @@ export default {
                         Authorization: 'Bearer ' + token,
                     },
                 })
-                .then((res) => {
+                .then(async (res) => {
                     user.value = res.data.user;
                     allUser.value = res.data.users;
+                    socket.emit('users', allUser.value);
                 })
                 .catch((err) => {
                     console.log(err.message);
@@ -153,8 +190,7 @@ export default {
                 )
                 .then((res) => {
                     router.push({
-                        name: 'pesan',
-                        params: { idChat: res.data.chat._id },
+                        path: `/chat/${res.data.chat._id}`,
                     });
                 })
                 .catch((err) => {
@@ -162,9 +198,11 @@ export default {
                 });
         };
 
-        const logout = () => {
+        const logout = async () => {
             localStorage.removeItem('token');
             localStorage.removeItem('email');
+            await axios.patch(`/api/logout/?id=${user.value._id}`);
+
             router.push({
                 name: 'login',
             });
@@ -176,16 +214,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.v-navigation-drawer.a {
+.v-navigation-drawer {
     background-image: url('../../public/valeriia-neganova-JYweIEW9TIc-unsplash.jpg');
     background-size: cover;
     background-position: center;
 }
-
-nav li:hover,
-nav li.router-link-active,
-nav li.router-link-exact-active {
-    background-color: indianred;
-    cursor: pointer;
+.v-main {
+    background-color: #bcaaa4;
 }
 </style>

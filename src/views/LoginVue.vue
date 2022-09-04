@@ -1,5 +1,8 @@
 <template>
     <div style="max-width: 300px" class="box">
+        <v-alert type="success" v-if="error" style="background-color: green">{{
+            error
+        }}</v-alert>
         <v-card class="mx-auto rounded-xl mt-6" elevation="23">
             <v-card-text class="text-center" elevation="12">
                 <v-card-title class="text-h4">Log In</v-card-title>
@@ -72,6 +75,14 @@ export default {
         const show = ref(false);
         const email = ref('');
         const password = ref('');
+        const error = ref('');
+
+        if (router.currentRoute.params.message) {
+            error.value = router.currentRoute.params.message;
+            setTimeout(() => {
+                error.value = '';
+            }, 3000);
+        }
 
         const submit = async () => {
             await axios
@@ -91,7 +102,7 @@ export default {
                 });
         };
 
-        return { email, password, show, submit };
+        return { email, password, show, submit, error };
     },
 };
 </script>
@@ -108,7 +119,7 @@ export default {
 
 @media (max-width: 600px) {
     .box {
-        margin-left: 3%;
+        margin-left: 1%;
     }
 }
 </style>

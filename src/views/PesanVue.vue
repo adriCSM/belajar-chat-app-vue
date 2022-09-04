@@ -1,22 +1,16 @@
 <template>
     <div>
-        <v-card class="overflow-y-auto pb-7 card1 messages" v-chat-scroll>
+        <v-card class="overflow-y-auto pb-7 messages" v-chat-scroll>
             <v-list v-for="(item, i) in allPesan" :key="i">
                 <!-- /**===============kiri========================== */ -->
                 <v-list-item
                     v-if="
-                        item.pengirim.email != email && item.chat._id == idChat
+                        item.pengirim.email != Email && item.chat._id == idChat
                     "
                 >
-                    <v-row class="me-1 mt-5">
-                        <v-col cols="1">
-                            <v-avatar>
-                                <v-img src="../../public/109715820.jpg">
-                                </v-img>
-                            </v-avatar>
-                        </v-col>
-                        <v-col class="pt-3 bable-Chat">
-                            <v-row class="m-1 mt-3" elavation="19">
+                    <v-row class="me-1 pt-0">
+                        <v-col class="pt-3 ms-2">
+                            <v-row class="mt-3" elavation="19">
                                 <span
                                     data-testid="tail-in"
                                     data-icon="tail-in"
@@ -27,7 +21,7 @@
                                         height="40"
                                     >
                                         <path
-                                            fill="#ffffff"
+                                            fill="#f1f5c4"
                                             d="M1.533 2.568 8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z"
                                         ></path>
                                     </svg>
@@ -37,15 +31,16 @@
                                 <v-col
                                     v-if="item.content.length > 37"
                                     cols="11 bg-white mt-4 rounded-xl rounded-tl-0 pt-1 "
-                                    style="background-color: white"
+                                    style="background-color: #f1f5c4"
+                                    :elevation="23"
                                 >
-                                    <h5 class="pt-3">
+                                    <h5 style="color: orange">
                                         {{ item.pengirim.name }}
                                     </h5>
                                     <div>
                                         {{ item.content }}
                                         <span
-                                            class="d-flex flex-row-reverse text-caption text-grey ps-10"
+                                            class="d-flex flex-row-reverse text-caption text-grey"
                                             dir="auto"
                                             >{{ item.waktu }}</span
                                         >
@@ -53,11 +48,12 @@
                                 </v-col>
                                 <!-- /**======================if teks pendek========================== */ -->
                                 <v-col
+                                    :elevation="23"
                                     v-if="item.content.length <= 37"
                                     cols="auto bg-white mt-4 rounded-xl rounded-tl-0 pt-1 "
-                                    style="background-color: white"
+                                    style="background-color: #f1f5c4"
                                 >
-                                    <h5 class="pt-3">
+                                    <h5 style="color: orange">
                                         {{ item.pengirim.name }}
                                     </h5>
                                     <div>
@@ -76,19 +72,16 @@
 
                 <!-- /**-----------kanan------------- */ -->
                 <v-list-item
+                    style="padding-right: 0"
                     v-if="
-                        item.pengirim.email == email && item.chat._id == idChat
+                        item.pengirim.email == Email && item.chat._id == idChat
                     "
                 >
-                    <v-row class="me-10 mt-5 d-flex flex-row-reverse">
-                        <v-col cols="1">
-                            <v-avatar>
-                                <v-img src="../../public/109715820.jpg">
-                                </v-img>
-                            </v-avatar>
-                        </v-col>
+                    <v-row class="me-2 pt-0 d-flex flex-row-reverse">
                         <v-col class="pt-3">
-                            <v-row class="m-1 mt-3 d-flex flex-row-reverse">
+                            <v-row
+                                class="m-1 mt-3 d-flex flex-row-reverse pe-2"
+                            >
                                 <span
                                     data-testid="tail-in"
                                     data-icon="tail-in"
@@ -97,10 +90,9 @@
                                         viewBox="0 0 7 50"
                                         width="7"
                                         height="40"
-                                        class=""
                                     >
                                         <path
-                                            fill="#90CAF9"
+                                            fill="#BDBDBD"
                                             d="M1.533 2.568 8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z"
                                         ></path>
                                     </svg>
@@ -109,10 +101,10 @@
                                 <!-- /**======================if teks panjang========================== */ -->
 
                                 <v-col
+                                    :elevation="23"
                                     v-if="item.content.length > 37"
                                     cols="11 bg-white mt-4 rounded-xl rounded-tr-0 pt-1 "
-                                    style="background-color: #90caf9"
-                                    elavation="19"
+                                    style="background-color: #bdbdbd"
                                 >
                                     <h5 class="d-flex flex-row-reverse">
                                         {{ item.pengirim.name }}
@@ -122,15 +114,16 @@
                                         <span
                                             class="d-flex flex-row-reverse text-caption text-grey ps-10"
                                             dir="auto"
-                                            >{{ item.waktu }}
-                                        </span>
+                                            >{{ item.waktu }}</span
+                                        >
                                     </div>
                                 </v-col>
                                 <!-- /**======================if teks pendek========================== */ -->
                                 <v-col
+                                    :elevation="23"
                                     v-if="item.content.length <= 37"
                                     cols="auto bg-white mt-4 rounded-xl rounded-tr-0 pt-1"
-                                    style="background-color: #90caf9"
+                                    style="background-color: #bdbdbd"
                                     elavation="19"
                                 >
                                     <h5 class="d-flex flex-row-reverse">
@@ -151,41 +144,56 @@
                 </v-list-item>
             </v-list>
         </v-card>
-
         <v-form @submit.prevent="submitHandler">
-            <v-footer
-                app
-                color="#90CAF9"
-                height="72"
-                inset
-                style="position: fixed"
-            >
-                <button>
-                    <span class="material-symbols-rounded mt-2 pl-1">
-                        attach_file
-                    </span>
-                </button>
-
-                <v-text-field
-                    v-model="pesan"
-                    background-color="white"
-                    dense
-                    flat
-                    hide-details
-                    rounded
-                    solo
-                    color="deep-orange lighten-5"
-                ></v-text-field>
-                <button
-                    size="small"
-                    type="submit"
-                    class="ms-2"
-                    background-color="white"
-                >
-                    <span class="material-symbols-rounded kirim mt-2">
-                        send
-                    </span>
-                </button>
+            <v-footer app height="72" inset style="position: fixed">
+                <v-row>
+                    <input
+                        id="fileUploadInput"
+                        class="ember-text-field ember-view"
+                        type="file"
+                        hidden
+                    />
+                    <v-col
+                        cols="1"
+                        style="padding-right: 0 0 0 0 0"
+                        class="adri"
+                    >
+                        <a href="#" @click="submitFile">
+                            <v-hover v-slot="{ hover }" open-delay="200">
+                                <label
+                                    :elevation="hover ? 16 : 2"
+                                    :class="{ 'on-hover': hover }"
+                                    for="fileUploadInput"
+                                    class="material-symbols-rounded mt-2"
+                                >
+                                    attach_file
+                                </label>
+                            </v-hover>
+                        </a>
+                    </v-col>
+                    <v-col cols="9">
+                        <v-text-field
+                            v-model="pesan"
+                            background-color="white"
+                            dense
+                            flat
+                            hide-details
+                            rounded
+                            solo
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="1 pl-0 ml-0">
+                        <button
+                            size="small"
+                            type="submit"
+                            background-color="white"
+                        >
+                            <span class="material-symbols-rounded kirim">
+                                send
+                            </span>
+                        </button>
+                    </v-col>
+                </v-row>
             </v-footer>
         </v-form>
     </div>
@@ -199,9 +207,8 @@ import io from 'socket.io-client';
 
 export default {
     setup() {
-        const socket = io('http://localhost:5000');
-        const email = localStorage.getItem('email');
-        console.log(email);
+        const socket = io(`/`);
+        const Email = ref(localStorage.getItem('email'));
         const pesan = ref();
         const allPesan = ref([]);
         const idChat = ref(router.currentRoute.params.idChat);
@@ -215,8 +222,8 @@ export default {
                     },
                 })
                 .then((res) => {
-                    console.log(res.data.allMessage);
                     res.data.allMessage.map((e) => {
+                        e.status = false;
                         allPesan.value.push(e);
                     });
                 })
@@ -225,53 +232,57 @@ export default {
                 });
         });
 
-        const jam = ref(new Date().getHours() + 1);
-        const menit = ref(new Date().getMinutes());
         const submitHandler = async () => {
-            if (jam.value == 25) {
-                jam.value = 1;
-            }
-            await axios
-                .post(
-                    '/api/sendPesan',
-                    {
-                        content: pesan.value,
-                        chatId: idChat.value,
-                        waktu: `${jam.value}:${menit.value}`,
-                    },
-                    {
-                        headers: {
-                            Authorization:
-                                'Bearer ' + localStorage.getItem('token'),
+            if (pesan.value) {
+                await axios
+                    .post(
+                        '/api/sendPesan',
+                        {
+                            content: pesan.value,
+                            chatId: idChat.value,
                         },
-                    },
-                )
-                .then((res) => {
-                    allPesan.value.push(res.data);
+                        {
+                            headers: {
+                                Authorization:
+                                    'Bearer ' + localStorage.getItem('token'),
+                            },
+                        },
+                    )
+                    .then((res) => {
+                        allPesan.value.push(res.data);
 
-                    socket.emit('kirim-pesan', res.data);
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
+                        socket.emit('kirim-pesan', res.data);
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                    });
+            }
             pesan.value = '';
         };
 
         socket.on('pesan', (data) => {
-            console.log('adri');
             allPesan.value.push(data);
         });
 
-        return { idChat, pesan, allPesan, submitHandler, email };
+        const submitFile = () => {
+            console.log('');
+        };
+        return { idChat, pesan, allPesan, submitHandler, Email, submitFile };
     },
 };
 </script>
 
 <style lang="scss" scoped>
+.v-footer {
+    background-image: url('../../public/valeriia-neganova-JYweIEW9TIc-unsplash.jpg');
+    background-position: center;
+    background-size: cover;
+}
 .icon {
     transform: rotateY(180deg);
 }
 .kirim {
+    color: white;
     font-size: 40px;
 }
 
@@ -286,46 +297,53 @@ export default {
 }
 
 .v-list {
-    background-color: aliceblue;
+    background-color: #bcaaa4;
 }
 
-.card1 {
-    background-color: aliceblue;
+.v-card {
+    background-color: #bcaaa4;
     min-height: 90vh;
     max-height: 90vh;
 }
 
 @media (max-width: 600px) {
-    .card1 {
+    .v-card {
         min-height: 80.5vh;
         max-height: 80.5vh;
-
-        .bable-Chat {
-            padding-left: 50px;
-        }
     }
 }
 @media (max-width: 340px) {
-    .card1 {
+    .v-card {
         min-height: 78vh;
         max-height: 78vh;
 
-        .bable-Chat {
-            padding-left: 50px;
+        .kirir {
+            padding: 0px;
         }
     }
 
     .v-footer {
-        width: max-content;
+        width: fit-content;
+
+        .adri {
+            padding-left: 0;
+            margin-left: 0;
+        }
+    }
+
+    .kiri {
+        padding-left: 0;
+        margin-left: 0;
     }
 }
 @media (min-width: 600px) {
-    .card1 {
+    .v-card {
         min-height: 81.5vh;
         max-height: 81.5vh;
     }
-    .bable-Chat {
-        padding-left: 0px;
+
+    .adri {
+        padding-left: 60px;
     }
 }
 </style>

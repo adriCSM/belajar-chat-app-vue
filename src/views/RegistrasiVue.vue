@@ -1,5 +1,10 @@
 <template>
     <div style="max-width: 350px" class="box">
+        <div v-if="error">
+            <v-alert dense type="warning" style="background-color: orange"
+                >{{ error }}
+            </v-alert>
+        </div>
         <v-card class="mx-auto" elevation="23">
             <v-card-text class="text-center" elevation="12">
                 <v-card-title class="text-h4">Registrasi</v-card-title>
@@ -19,6 +24,7 @@
                         </v-col>
                         <v-col cols="12" sm="12">
                             <v-text-field
+                                typr="email"
                                 elevation="12"
                                 v-model="email"
                                 label="Email"
@@ -34,17 +40,6 @@
                                 label="Password"
                                 solo
                                 @click:append="show1 = !show1"
-                                required
-                            ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="12">
-                            <v-text-field
-                                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                                :type="show ? 'text' : 'password'"
-                                :rules="[rules.match]"
-                                label="Confirm Password"
-                                solo
-                                @click:append="show = !show"
                                 required
                             ></v-text-field>
                         </v-col>
@@ -90,16 +85,12 @@ import { ref } from 'vue';
 
 export default {
     setup() {
+        const error = ref('');
         const show = ref(false);
         const show1 = ref(false);
         const username = ref('');
         const email = ref('');
         const password = ref('');
-        const rules = ref({
-            match: (value) =>
-                value == password.value ||
-                'Password dan Confirm password tidak cocok',
-        });
 
         const submit = async () => {
             await axios
@@ -111,7 +102,18 @@ export default {
                 .then(() => {
                     router.push({
                         name: 'login',
+                        params: { message: 'Create account success' },
                     });
+                })
+                .catch((err) => {
+                    error.value = err.response.data.message;
+                    setTimeout(() => {
+                        error.value = '';
+                    }, 3000);
+
+                    username.value = '';
+                    email.value = '';
+                    password.value = '';
                 });
         };
 
@@ -121,8 +123,8 @@ export default {
             email,
             show,
             show1,
-            rules,
             submit,
+            error,
         };
     },
 };
