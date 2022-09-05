@@ -101,7 +101,7 @@ export default {
                 })
                 .then(() => {
                     router.push({
-                        name: 'login',
+                        name: '|| login',
                         params: { message: 'Create account success' },
                     });
                 })

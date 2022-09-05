@@ -197,7 +197,7 @@ export default {
         const token = localStorage.getItem('token');
         const user = ref('');
         const allUser = ref([]);
-        const socket = io('http://localhost:3000');
+        const socket = io('/');
         const stranger = ref('');
 
         if (token == null) {

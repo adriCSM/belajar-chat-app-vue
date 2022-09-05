@@ -204,7 +204,7 @@ import io from 'socket.io-client';
 
 export default {
     setup() {
-        const socket = io(`http://localhost:3000`);
+        const socket = io(`/`);
         const Id = ref(localStorage.getItem('id'));
         const pesan = ref();
         const allPesan = ref([]);

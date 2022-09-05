@@ -79,7 +79,7 @@ import io from 'socket.io-client';
 
 export default {
     setup() {
-        const socket = io('http://localhost:3000');
+        const socket = io('/');
         const show = ref(false);
         const email = ref('');
         const password = ref('');

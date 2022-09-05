@@ -2,7 +2,7 @@
     <v-card class="mx-auto text-center" max-width="500px" elevation="20">
         <v-img
             class="white--text align-end"
-            width="500px"
+            height="450px"
             :src="user.pic"
             style="border: 2px solid #4db6ac"
         >
@@ -11,7 +11,9 @@
             </v-card-title>
         </v-img>
 
-        <v-card-subtitle class="pb-5"> {{ user.name }} </v-card-subtitle>
+        <v-card-subtitle class="pb-5">
+            {{ user.name }}
+        </v-card-subtitle>
         <v-card-text>{{ user.email }}</v-card-text>
 
         <v-card-text class="text--primary">
@@ -221,7 +223,7 @@ export default {
                 })
                 .then(() => {
                     router.push({
-                        name: 'login',
+                        name: '|| login',
                         params: { message: 'Akun berhasil di hapus' },
                     });
                 });
