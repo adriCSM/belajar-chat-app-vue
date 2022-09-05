@@ -4,9 +4,7 @@
             <v-list v-for="(item, i) in allPesan" :key="i">
                 <!-- /**===============kiri========================== */ -->
                 <v-list-item
-                    v-if="
-                        item.pengirim.email != Email && item.chat._id == idChat
-                    "
+                    v-if="item.pengirim._id != Id && item.chat._id == idChat"
                 >
                     <v-row class="me-1 pt-0">
                         <v-col class="pt-3 ms-2">
@@ -73,9 +71,7 @@
                 <!-- /**-----------kanan------------- */ -->
                 <v-list-item
                     style="padding-right: 0"
-                    v-if="
-                        item.pengirim.email == Email && item.chat._id == idChat
-                    "
+                    v-if="item.pengirim._id == Id && item.chat._id == idChat"
                 >
                     <v-row class="me-2 pt-0 d-flex flex-row-reverse">
                         <v-col class="pt-3">
@@ -92,7 +88,7 @@
                                         height="40"
                                     >
                                         <path
-                                            fill="#BDBDBD"
+                                            fill="#4db6ac"
                                             d="M1.533 2.568 8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z"
                                         ></path>
                                     </svg>
@@ -104,7 +100,7 @@
                                     :elevation="23"
                                     v-if="item.content.length > 37"
                                     cols="11 bg-white mt-4 rounded-xl rounded-tr-0 pt-1 "
-                                    style="background-color: #bdbdbd"
+                                    style="background-color: #4db6ac"
                                 >
                                     <h5 class="d-flex flex-row-reverse">
                                         {{ item.pengirim.name }}
@@ -123,7 +119,7 @@
                                     :elevation="23"
                                     v-if="item.content.length <= 37"
                                     cols="auto bg-white mt-4 rounded-xl rounded-tr-0 pt-1"
-                                    style="background-color: #bdbdbd"
+                                    style="background-color: #4db6ac"
                                     elavation="19"
                                 >
                                     <h5 class="d-flex flex-row-reverse">
@@ -161,6 +157,7 @@
                         <a href="#" @click="submitFile">
                             <v-hover v-slot="{ hover }" open-delay="200">
                                 <label
+                                    style="color: white; padding-left: 5px"
                                     :elevation="hover ? 16 : 2"
                                     :class="{ 'on-hover': hover }"
                                     for="fileUploadInput"
@@ -207,8 +204,8 @@ import io from 'socket.io-client';
 
 export default {
     setup() {
-        const socket = io(`/`);
-        const Email = ref(localStorage.getItem('email'));
+        const socket = io(`http://localhost:3000`);
+        const Id = ref(localStorage.getItem('id'));
         const pesan = ref();
         const allPesan = ref([]);
         const idChat = ref(router.currentRoute.params.idChat);
@@ -267,16 +264,24 @@ export default {
         const submitFile = () => {
             console.log('');
         };
-        return { idChat, pesan, allPesan, submitHandler, Email, submitFile };
+        return {
+            idChat,
+            pesan,
+            allPesan,
+            submitHandler,
+            Id,
+            submitFile,
+        };
     },
 };
 </script>
 
 <style lang="scss" scoped>
 .v-footer {
-    background-image: url('../../public/valeriia-neganova-JYweIEW9TIc-unsplash.jpg');
+    // background-image: url('../../public/bharath-g-s-aLGiPJ4XRO4-unsplash.jpg');
     background-position: center;
     background-size: cover;
+    background-color: #4db6ac;
 }
 .icon {
     transform: rotateY(180deg);
@@ -297,11 +302,11 @@ export default {
 }
 
 .v-list {
-    background-color: #bcaaa4;
+    background-color: transparent;
 }
 
 .v-card {
-    background-color: #bcaaa4;
+    background-color: transparent;
     min-height: 90vh;
     max-height: 90vh;
 }

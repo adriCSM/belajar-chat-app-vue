@@ -1,6 +1,12 @@
 <template>
     <div style="max-width: 300px" class="box">
-        <v-alert type="success" v-if="error" style="background-color: green">{{
+        <v-alert
+            type="success"
+            v-if="success"
+            style="background-color: green"
+            >{{ success }}</v-alert
+        >
+        <v-alert type="error" v-if="error" style="background-color: red">{{
             error
         }}</v-alert>
         <v-card class="mx-auto rounded-xl mt-6" elevation="23">
@@ -69,18 +75,21 @@
 import router from '@/router';
 import axios from 'axios';
 import { ref } from 'vue';
+import io from 'socket.io-client';
 
 export default {
     setup() {
+        const socket = io('http://localhost:3000');
         const show = ref(false);
         const email = ref('');
         const password = ref('');
         const error = ref('');
+        const success = ref('');
 
         if (router.currentRoute.params.message) {
-            error.value = router.currentRoute.params.message;
+            success.value = router.currentRoute.params.message;
             setTimeout(() => {
-                error.value = '';
+                success.value = '';
             }, 3000);
         }
 
@@ -92,26 +101,32 @@ export default {
                 })
                 .then((res) => {
                     localStorage.setItem('token', res.data.token);
-                    localStorage.setItem('email', res.data.email);
+                    localStorage.setItem('id', res.data._id);
+
+                    socket.emit('id', res.data._id);
+
                     router.push({
                         name: 'chat',
                     });
                 })
                 .catch((err) => {
-                    console.log(err.message);
+                    error.value = err.response.data.message;
+                    setTimeout(() => {
+                        error.value = '';
+                    }, 3000);
                 });
         };
 
-        return { email, password, show, submit, error };
+        return { email, password, show, submit, error, success };
     },
 };
 </script>
 <style lang="scss" scoped>
 .box {
-    display: fixed;
+    display: block;
 
-    margin-top: 8%;
-    margin-left: 40%;
+    margin-right: auto;
+    margin-left: auto;
 }
 .v-card {
     background-color: #80cbc4;

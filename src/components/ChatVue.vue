@@ -1,42 +1,62 @@
 <template>
     <v-app id="inspire">
-        <v-app-bar
-            app
-            clipped-right
-            flat
-            height="72"
-            color="blue-grey darken-4"
-        >
+        <v-app-bar app clipped-right flat height="72" color="#4db6ac">
             <v-app-bar-nav-icon
                 @click="drawer = !drawer"
                 color="white"
             ></v-app-bar-nav-icon>
+            <v-list
+                max-width="156"
+                v-for="(item, i) in stranger"
+                :key="i"
+                style="background-color: transparent"
+            >
+                <v-list-item
+                    color="white"
+                    v-if="item._id !== user._id"
+                    class="pl-0"
+                >
+                    <v-list-item-avatar>
+                        <v-img :src="item.pic"> </v-img>
+                    </v-list-item-avatar>
+
+                    <v-list-item-content>
+                        <v-list-item-title style="color: black">
+                            {{ item.name }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                            <h5 style="color: grey">
+                                {{ item.status }}
+                            </h5>
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
             <v-spacer></v-spacer>
-            <v-responsive max-width="156">
-                <v-text-field
+            <v-responsive>
+                <!-- <v-text-field
                     dense
                     flat
                     hide-details
                     rounded
                     solo-inverted
                     class="bg-white"
-                ></v-text-field>
+                ></v-text-field> -->
             </v-responsive>
-            <div class="me-5">
-                <v-btn color="error" dark small @click="logout">
-                    Log Out
+            <div>
+                <v-btn fab color="transparant" small @click="logout">
+                    <v-img
+                        src="../../public/icons8-shutdown-32.png"
+                        elevation="20"
+                    >
+                    </v-img>
                 </v-btn>
             </div>
         </v-app-bar>
 
         <v-navigation-drawer v-model="drawer" app width="300">
-            <v-sheet
-                color="grey lighten-5"
-                height="128"
-                width="100%"
-                class="mb-10"
-            >
-                <v-list color="grey">
+            <v-sheet color="#B2DFDB" height="128" width="100%" class="mb-10">
+                <v-list color="teal lighten-4">
                     <router-link to="/profile">
                         <v-list-item-avatar
                             width="70px"
@@ -45,6 +65,7 @@
                                 display: block;
                                 margin-left: auto;
                                 margin-right: auto;
+                                border: 2px solid #4db6ac;
                             "
                         >
                             <v-img :src="user.pic" link width="500px"></v-img>
@@ -67,7 +88,7 @@
             <v-list v-for="(item, i) in allUser" :key="i" class="pa-0">
                 <v-list-item
                     color="white"
-                    v-if="item.email !== user.email"
+                    v-if="item._id !== user._id"
                     @click="klik(item._id)"
                     to="/chat"
                     link
@@ -79,9 +100,9 @@
                         dot
                         offset-x="25"
                         offset-y="48"
-                        v-if="item.status == true"
+                        v-if="item.status == 'Online'"
                     >
-                        <v-list-item-avatar>
+                        <v-list-item-avatar style="border: 2px solid #4db6ac">
                             <v-img :src="item.pic"> </v-img>
                         </v-list-item-avatar>
                     </v-badge>
@@ -92,19 +113,19 @@
                         dot
                         offset-x="25"
                         offset-y="48"
-                        v-if="item.status == false"
+                        v-if="item.status == 'Offline'"
                     >
-                        <v-list-item-avatar v-if="item.status == false">
+                        <v-list-item-avatar style="border: 2px solid #4db6ac">
                             <v-img :src="item.pic"> </v-img>
                         </v-list-item-avatar>
                     </v-badge>
 
                     <v-list-item-content>
-                        <v-list-item-title color="white">
+                        <v-list-item-title style="color: black">
                             {{ item.name }}
                         </v-list-item-title>
                         <v-list-item-subtitle>
-                            <h5 style="color: lightblue">
+                            <h5 style="color: grey">
                                 {{ item.email }}
                             </h5>
                         </v-list-item-subtitle>
@@ -124,8 +145,40 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-main>
-            <router-view> Pesan</router-view>
+        <v-main style="display: fixed"
+            ><div id="particle-container">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+            <router-view> Pesan </router-view>
         </v-main>
     </v-app>
 </template>
@@ -144,7 +197,8 @@ export default {
         const token = localStorage.getItem('token');
         const user = ref('');
         const allUser = ref([]);
-        const socket = io('/');
+        const socket = io('http://localhost:3000');
+        const stranger = ref('');
 
         if (token == null) {
             router.push({
@@ -189,6 +243,7 @@ export default {
                     },
                 )
                 .then((res) => {
+                    stranger.value = res.data.chat.users;
                     router.push({
                         path: `/chat/${res.data.chat._id}`,
                     });
@@ -199,27 +254,59 @@ export default {
         };
 
         const logout = async () => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('email');
-            await axios.patch(`/api/logout/?id=${user.value._id}`);
+            await axios.patch('/api/logout/?id=' + user.value._id).then(() => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('email');
 
-            router.push({
-                name: 'login',
+                router.push({
+                    name: '|| login',
+                });
             });
         };
 
-        return { logout, drawer, user, allUser, klik, token };
+        return { logout, drawer, user, allUser, klik, token, stranger };
     },
 };
 </script>
 
 <style lang="scss" scoped>
 .v-navigation-drawer {
-    background-image: url('../../public/valeriia-neganova-JYweIEW9TIc-unsplash.jpg');
+    background-image: url('../../public/bharath-g-s-aLGiPJ4XRO4-unsplash.jpg');
     background-size: cover;
     background-position: center;
 }
 .v-main {
     background-color: #bcaaa4;
+}
+.particle {
+    position: absolute;
+    border-radius: 50%;
+}
+
+@for $i from 1 through 30 {
+    @keyframes particle-animation-#{$i} {
+        100% {
+            transform: translate3d(
+                (random(90) * 1vw),
+                (random(90) * 1vh),
+                (random(100) * 1px)
+            );
+        }
+    }
+
+    .particle:nth-child(#{$i}) {
+        animation: particle-animation-#{$i} 60s infinite;
+        $size: random(10) + 5 + px;
+        opacity: random(100) / 100;
+        height: $size;
+        width: $size;
+        animation-delay: -$i * 0.1s;
+        transform: translate3d(
+            (random(90) * 1vw),
+            (random(90) * 1vh),
+            (random(100) * 1px)
+        );
+        background: hsl(random(360), 70%, 50%);
+    }
 }
 </style>

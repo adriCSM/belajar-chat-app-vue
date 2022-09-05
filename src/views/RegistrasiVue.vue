@@ -131,10 +131,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+body {
+    margin-bottom: 100vh;
+}
 .box {
-    display: fixed;
-    margin-top: 8%;
-    margin-left: 40%;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 .v-card {
     background-color: #80cbc4;

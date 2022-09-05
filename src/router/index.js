@@ -19,27 +19,32 @@ const router = new VueRouter({
             children: [
                 {
                     path: '/chat/:idChat',
-                    name: 'pesan',
+                    name: '|| Pesan',
                     component: Pesan,
                 },
                 {
                     path: '/profile',
-                    name: 'profil',
+                    name: '|| Profil',
                     component: Profil,
                 },
             ],
         },
         {
             path: '/registrasi',
-            name: 'registrasi',
+            name: '|| registrasi',
             component: Registrasi,
         },
         {
             path: '/',
-            name: 'login',
+            name: '|| login',
             component: Login,
         },
     ],
+});
+
+router.beforeEach((to, from, next) => {
+    document.title = 'Chat ' + to.name;
+    next();
 });
 
 export default router;
